@@ -15,3 +15,7 @@ Soon I will create a document describing the system design.
 In the root folder run the command:
 
 `mvn clean install`
+
+# Important
+
+This code is a WIP.
