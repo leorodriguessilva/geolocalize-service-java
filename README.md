@@ -5,7 +5,7 @@ aimed to retrieve retrieve latitude and longitude information
 by using a context key. The results are then mapped into a distributed
 cache and made available for further requests.
 
-This project is coded in javascript and can be executed by a nodejs server.  
+This project is coded in java.  
 
 Soon I will create a document describing the system design.
 
