@@ -1,7 +1,7 @@
 # geolocalize-service
 
 Geocalize service is a solution based on an API
-aimed to retrieve retrieve latitude and longitude information
+aimed to retrieve latitude and longitude information
 by using a context key. The results are then mapped into a distributed
 cache and made available for further requests.
 
