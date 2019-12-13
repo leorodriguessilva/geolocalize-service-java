@@ -1,4 +1,4 @@
-package br.com.involves.geolocalize.domain;
+package br.com.involves.geolocalize.dto;
 
 public enum TypeCache {
 
