@@ -2,7 +2,7 @@ package br.com.involves.geolocalize.dao.api;
 
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
 
-public interface GeolocalizationApiResultDao extends AutoCloseable {
+public interface PersistentDao extends AutoCloseable {
 
     boolean save(GeolocalizationApiResult geolocalizationApiResult);
 

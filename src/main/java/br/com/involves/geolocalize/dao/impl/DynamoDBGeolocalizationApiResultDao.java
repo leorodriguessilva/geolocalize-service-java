@@ -1,6 +1,6 @@
 package br.com.involves.geolocalize.dao.impl;
 
-import br.com.involves.geolocalize.dao.api.GeolocalizationApiResultDao;
+import br.com.involves.geolocalize.dao.api.PersistentDao;
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -8,7 +8,7 @@ import com.amazonaws.services.dynamodbv2.document.*;
 
 import java.util.Date;
 
-public class DynamoDBGeolocalizationApiResultDao implements GeolocalizationApiResultDao {
+public class DynamoDBGeolocalizationApiResultDao implements PersistentDao {
 
     private String tableName;
 

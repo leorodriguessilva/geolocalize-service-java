@@ -1,17 +1,17 @@
 package br.com.involves.geolocalize.dao.impl;
 
-import br.com.involves.geolocalize.dao.api.GeolocalizationApiResultDao;
+import br.com.involves.geolocalize.dao.api.PersistentDao;
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class GeolocalizationApiResultLoggerDao implements GeolocalizationApiResultDao {
+public class GeolocalizationApiResultLoggerDao implements PersistentDao {
 
     static final Logger logger = LogManager.getLogger(GeolocalizationApiResultLoggerDao.class);
 
-    private GeolocalizationApiResultDao wrapped;
+    private PersistentDao wrapped;
 
-    public GeolocalizationApiResultLoggerDao(GeolocalizationApiResultDao wrapped) {
+    public GeolocalizationApiResultLoggerDao(PersistentDao wrapped) {
         this.wrapped = wrapped;
     }
 

@@ -1,16 +1,16 @@
 package br.com.involves.geolocalize.event.handler.response;
 
-import br.com.involves.geolocalize.dto.GeolocalizationResult;
+import br.com.involves.geolocalize.dto.GeolocalizationResultDTO;
 
 public class GeolocalizationResponse {
 
-    private GeolocalizationResult[] results;
+    private GeolocalizationResultDTO[] results;
 
-    public GeolocalizationResult[] getResults() {
+    public GeolocalizationResultDTO[] getResults() {
         return results;
     }
 
-    public void setResults(GeolocalizationResult[] results) {
+    public void setResults(GeolocalizationResultDTO[] results) {
         this.results = results;
     }
 }

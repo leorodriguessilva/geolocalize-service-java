@@ -1,9 +1,9 @@
 package br.com.involves.geolocalize.dao.impl;
 
-import br.com.involves.geolocalize.dao.api.GeolocalizationApiResultCacheDao;
+import br.com.involves.geolocalize.dao.api.CacheDao;
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
 
-public class NoGeolocalizationApiResultCacheDao implements GeolocalizationApiResultCacheDao {
+public class NoGeolocalizationApiResultCacheDao implements CacheDao {
     @Override
     public void save(GeolocalizationApiResult geolocalizationApiResult) { }
 

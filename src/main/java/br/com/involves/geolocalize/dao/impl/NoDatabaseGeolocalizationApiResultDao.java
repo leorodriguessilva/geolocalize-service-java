@@ -1,9 +1,9 @@
 package br.com.involves.geolocalize.dao.impl;
 
-import br.com.involves.geolocalize.dao.api.GeolocalizationApiResultDao;
+import br.com.involves.geolocalize.dao.api.PersistentDao;
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
 
-public class NoDatabaseGeolocalizationApiResultDao implements GeolocalizationApiResultDao {
+public class NoDatabaseGeolocalizationApiResultDao implements PersistentDao {
     @Override
     public boolean save(GeolocalizationApiResult geolocalizationApiResult) {
         return false;

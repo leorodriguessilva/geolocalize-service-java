@@ -1,6 +1,6 @@
 package br.com.involves.geolocalize.dto;
 
-public class GeolocalizationResult {
+public class GeolocalizationResultDTO {
 
     private String query;
 

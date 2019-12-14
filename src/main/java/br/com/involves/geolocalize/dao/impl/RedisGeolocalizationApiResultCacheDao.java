@@ -1,6 +1,6 @@
 package br.com.involves.geolocalize.dao.impl;
 
-import br.com.involves.geolocalize.dao.api.GeolocalizationApiResultCacheDao;
+import br.com.involves.geolocalize.dao.api.CacheDao;
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
@@ -8,7 +8,7 @@ import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 
-public class RedisGeolocalizationApiResultCacheDao implements GeolocalizationApiResultCacheDao {
+public class RedisGeolocalizationApiResultCacheDao implements CacheDao {
 
     private Jedis jedis;
 

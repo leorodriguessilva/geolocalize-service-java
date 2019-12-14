@@ -1,6 +1,6 @@
 package br.com.involves.geolocalize.dao.impl;
 
-import br.com.involves.geolocalize.dao.api.GeolocalizationApiResultDao;
+import br.com.involves.geolocalize.dao.api.PersistentDao;
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.BoundStatement;
@@ -14,7 +14,7 @@ import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CassandraGeolocalizationApiResultDao implements GeolocalizationApiResultDao {
+public class CassandraGeolocalizationApiResultDao implements PersistentDao {
 
     private final Logger logger = LogManager.getLogger(CassandraGeolocalizationApiResultDao.class);
 
