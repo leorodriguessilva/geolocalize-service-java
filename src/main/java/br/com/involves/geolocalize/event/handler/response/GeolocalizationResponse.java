@@ -23,11 +23,11 @@ public class GeolocalizationResponse {
         this.statusCode = statusCode;
     }
 
-    public List<GeolocalizationResultDTO> getResults() {
+    public List<GeolocalizationResultDTO> getQueries() {
         return results;
     }
 
-    public void setResults(List<GeolocalizationResultDTO> results) {
+    public void setQueries(List<GeolocalizationResultDTO> results) {
         this.results = results;
     }
 }
