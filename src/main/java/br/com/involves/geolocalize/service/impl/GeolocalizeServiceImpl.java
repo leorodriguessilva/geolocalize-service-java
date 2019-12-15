@@ -5,19 +5,35 @@ import br.com.involves.geolocalize.dto.GeolocalizationResultDTO;
 import br.com.involves.geolocalize.service.api.EnvironmentConfigService;
 import br.com.involves.geolocalize.service.api.GeolocalizationCacheService;
 import br.com.involves.geolocalize.service.api.GeolocalizationService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
 public class GeolocalizeServiceImpl implements GeolocalizationService {
 
-    private GeolocalizationCacheService cacheService;
+    private final Logger logger = LogManager.getLogger(GeolocalizeServiceImpl.class);
 
-    public GeolocalizeServiceImpl(int typeCache, EnvironmentConfigService environmentConfigService) {
-        this.cacheService = new GeolocalizationCacheServiceImpl(typeCache, environmentConfigService);
+    private int typeCache;
+
+    private EnvironmentConfigService configService;
+
+    public GeolocalizeServiceImpl(int typeCache, EnvironmentConfigService configService) {
+        this.typeCache = typeCache;
+        this.configService = configService;
     }
 
     @Override
-    public GeolocalizationResultDTO geolocalizeByQuery(String query) {
+    public GeolocalizationResultDTO geolocalize(String query) {
+        try (GeolocalizationCacheService cacheService = new GeolocalizationCacheServiceImpl(typeCache, configService)) {
+            return geolocalizeByQuery(query, cacheService);
+        } catch(Exception ex) {
+            logger.error("Unidentified error when closing cache service", ex);
+        }
+        return null;
+    }
+
+    private GeolocalizationResultDTO geolocalizeByQuery(String query, GeolocalizationCacheService cacheService) {
         GeolocalizationApiResult result = cacheService.findCachedByQuery(query);
 
         if(result != null) {

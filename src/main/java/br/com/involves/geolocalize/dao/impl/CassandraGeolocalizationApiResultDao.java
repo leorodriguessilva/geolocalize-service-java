@@ -18,6 +18,8 @@ public class CassandraGeolocalizationApiResultDao implements PersistentDao {
 
     private final Logger logger = LogManager.getLogger(CassandraGeolocalizationApiResultDao.class);
 
+    private final CqlSession session;
+
     private String tableName;
 
     private String host;
@@ -34,10 +36,11 @@ public class CassandraGeolocalizationApiResultDao implements PersistentDao {
         this.user = user;
         this.pass = pass;
         this.tableName = tableName;
+        session = createSession();
     }
 
     public boolean save(GeolocalizationApiResult geolocalizationApiResult) {
-        try (CqlSession session = createSession()) {
+        try {
             PreparedStatement statement = session.prepare(String.format("insert into %s (query, longitude, latitude, expireAt) values (?, ?, ?, ?)", tableName));
             BoundStatement binded = statement.bind();
             binded.setString(1, geolocalizationApiResult.getQuery());
@@ -54,7 +57,7 @@ public class CassandraGeolocalizationApiResultDao implements PersistentDao {
     }
 
     public boolean deleteByQuery(String query) {
-        try (CqlSession session = createSession()) {
+        try {
             PreparedStatement statement = session.prepare(String.format("delete from %s where query = ?", tableName));
             BoundStatement binded = statement.bind(query);
 
@@ -67,7 +70,7 @@ public class CassandraGeolocalizationApiResultDao implements PersistentDao {
     }
 
     public GeolocalizationApiResult findByQuery(String query) {
-        try (CqlSession session = createSession()) {
+        try {
             PreparedStatement statement = session.prepare(String.format("select * from %s where query = ?", tableName));
             BoundStatement binded = statement.bind(query);
 
@@ -87,7 +90,9 @@ public class CassandraGeolocalizationApiResultDao implements PersistentDao {
         return null;
     }
 
-    public void close() throws IOException { }
+    public void close() throws IOException {
+        session.close();
+    }
 
     private CqlSession createSession() {
         return CqlSession.builder()

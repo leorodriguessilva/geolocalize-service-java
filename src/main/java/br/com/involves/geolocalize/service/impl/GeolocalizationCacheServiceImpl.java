@@ -7,11 +7,15 @@ import br.com.involves.geolocalize.dao.impl.GeolocalizationApiResultDaoFactory;
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
 import br.com.involves.geolocalize.service.api.EnvironmentConfigService;
 import br.com.involves.geolocalize.service.api.GeolocalizationCacheService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Calendar;
 import java.util.Date;
 
 public class GeolocalizationCacheServiceImpl implements GeolocalizationCacheService {
+
+    private final Logger logger = LogManager.getLogger(GeolocalizationCacheServiceImpl.class);
 
     private DaoFactory daoFactory;
 
@@ -46,9 +50,19 @@ public class GeolocalizationCacheServiceImpl implements GeolocalizationCacheServ
         PersistentDao persistentDao = daoFactory.createPersistentDao();
         GeolocalizationApiResult result = persistentDao.findByQuery(query);
         if(isExpired(result.getExpireAt())) {
+            persistentDao.deleteByQuery(query);
             return null;
         }
         return result;
+    }
+
+    @Override
+    public void close() {
+        try {
+            daoFactory.close();
+        } catch (Exception ex) {
+            logger.error(ex);
+        }
     }
 
     private boolean isExpired(Date expiringDate) {

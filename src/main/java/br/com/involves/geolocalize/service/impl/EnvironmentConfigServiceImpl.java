@@ -92,4 +92,10 @@ public class EnvironmentConfigServiceImpl implements EnvironmentConfigService {
         boolean logPersistentCache = Boolean.parseBoolean(System.getenv().get(EnvironmentConfigConstants.LOG_PERSISTENT_CACHE));
         return logPersistentCache;
     }
+
+    @Override
+    public int getAmountQueriesProcessing() {
+        int amountQueriesProcessing = Integer.parseInt(System.getenv().get(EnvironmentConfigConstants.AMOUNT_QUERIES_PROCESSING));
+        return amountQueriesProcessing;
+    }
 }

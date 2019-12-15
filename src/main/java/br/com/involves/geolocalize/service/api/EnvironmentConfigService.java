@@ -34,5 +34,5 @@ public interface EnvironmentConfigService {
 
     boolean getLogPersistentCache();
 
-
+    int getAmountQueriesProcessing();
 }

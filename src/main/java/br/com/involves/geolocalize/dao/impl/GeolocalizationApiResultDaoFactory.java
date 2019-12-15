@@ -5,7 +5,6 @@ import br.com.involves.geolocalize.dao.api.DaoFactory;
 import br.com.involves.geolocalize.dao.api.PersistentDao;
 import br.com.involves.geolocalize.dto.TypeCache;
 import br.com.involves.geolocalize.service.api.EnvironmentConfigService;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +35,20 @@ public class GeolocalizationApiResultDaoFactory implements DaoFactory {
             return persistentDaos.get(typeCache);
         }
         return new NoDatabaseGeolocalizationApiResultDao();
+    }
+
+    @Override
+    public void close() throws Exception {
+        try {
+            for (PersistentDao persistentDao : persistentDaos.values()) {
+                persistentDao.close();
+            }
+            for (CacheDao cacheDao : cacheDaos.values()) {
+                cacheDao.close();
+            }
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
 
     private void mapPersistentDao() {

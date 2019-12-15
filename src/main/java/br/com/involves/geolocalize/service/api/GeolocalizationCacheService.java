@@ -2,7 +2,7 @@ package br.com.involves.geolocalize.service.api;
 
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
 
-public interface GeolocalizationCacheService {
+public interface GeolocalizationCacheService extends AutoCloseable {
 
     void persist(GeolocalizationApiResult geolocalizationApiResult);
 

@@ -10,6 +10,8 @@ import java.util.Date;
 
 public class DynamoDBGeolocalizationApiResultDao implements PersistentDao {
 
+    private final AmazonDynamoDB client;
+
     private String tableName;
 
     private String regionName;
@@ -17,14 +19,18 @@ public class DynamoDBGeolocalizationApiResultDao implements PersistentDao {
     public DynamoDBGeolocalizationApiResultDao(String tableName, String regionName) {
         this.tableName = tableName;
         this.regionName = regionName;
+        client = createConnection(regionName);
+    }
+
+    private AmazonDynamoDB createConnection(String regionName) {
+        return AmazonDynamoDBClientBuilder.standard()
+                .withRegion(regionName)
+                .build();
     }
 
     @Override
     public boolean save(GeolocalizationApiResult geolocalizationApiResult) {
-        AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.standard()
-                .withRegion(regionName)
-                .build();
-        DynamoDB dynamoDB = new DynamoDB(ddb);
+        DynamoDB dynamoDB = new DynamoDB(client);
 
         Table table = dynamoDB.getTable(tableName);
 
@@ -40,10 +46,7 @@ public class DynamoDBGeolocalizationApiResultDao implements PersistentDao {
 
     @Override
     public boolean deleteByQuery(String query) {
-        AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.standard()
-                .withRegion(regionName)
-                .build();
-        DynamoDB dynamoDB = new DynamoDB(ddb);
+        DynamoDB dynamoDB = new DynamoDB(client);
 
         Table table = dynamoDB.getTable(tableName);
 
@@ -56,10 +59,7 @@ public class DynamoDBGeolocalizationApiResultDao implements PersistentDao {
 
     @Override
     public GeolocalizationApiResult findByQuery(String query) {
-        AmazonDynamoDB ddb = AmazonDynamoDBClientBuilder.standard()
-                .withRegion(regionName)
-                .build();
-        DynamoDB dynamoDB = new DynamoDB(ddb);
+        DynamoDB dynamoDB = new DynamoDB(client);
 
         Table table = dynamoDB.getTable(tableName);
 
@@ -79,6 +79,6 @@ public class DynamoDBGeolocalizationApiResultDao implements PersistentDao {
 
     @Override
     public void close() throws Exception {
-
+        client.shutdown();
     }
 }

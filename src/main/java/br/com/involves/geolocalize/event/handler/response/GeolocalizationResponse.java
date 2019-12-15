@@ -2,15 +2,32 @@ package br.com.involves.geolocalize.event.handler.response;
 
 import br.com.involves.geolocalize.dto.GeolocalizationResultDTO;
 
+import java.util.List;
+
 public class GeolocalizationResponse {
 
-    private GeolocalizationResultDTO[] results;
+    private int statusCode;
 
-    public GeolocalizationResultDTO[] getResults() {
+    private List<GeolocalizationResultDTO> results;
+
+    public GeolocalizationResponse(int statusCode, List<GeolocalizationResultDTO> results) {
+        this.statusCode = statusCode;
+        this.results = results;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public List<GeolocalizationResultDTO> getResults() {
         return results;
     }
 
-    public void setResults(GeolocalizationResultDTO[] results) {
+    public void setResults(List<GeolocalizationResultDTO> results) {
         this.results = results;
     }
 }
