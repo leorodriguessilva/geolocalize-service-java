@@ -5,25 +5,21 @@ import br.com.involves.geolocalize.dao.api.DaoFactory;
 import br.com.involves.geolocalize.dao.api.PersistentDao;
 import br.com.involves.geolocalize.dao.impl.GeolocalizationApiResultDaoFactory;
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
-import br.com.involves.geolocalize.service.api.EnvironmentConfigService;
+import br.com.involves.geolocalize.service.api.ConfigService;
 import br.com.involves.geolocalize.service.api.GeolocalizationCacheService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Calendar;
 import java.util.Date;
 
 public class GeolocalizationCacheServiceImpl implements GeolocalizationCacheService {
 
-    private final Logger logger = LogManager.getLogger(GeolocalizationCacheServiceImpl.class);
-
     private DaoFactory daoFactory;
 
-    private EnvironmentConfigService environmentConfigService;
+    private ConfigService configService;
 
-    public GeolocalizationCacheServiceImpl(int typeCache, EnvironmentConfigService environmentConfigService) {
-        this.daoFactory = new GeolocalizationApiResultDaoFactory(typeCache, environmentConfigService);
-        this.environmentConfigService = environmentConfigService;
+    public GeolocalizationCacheServiceImpl(int typeCache, ConfigService configService) {
+        this.daoFactory = new GeolocalizationApiResultDaoFactory(typeCache, configService);
+        this.configService = configService;
     }
 
     @Override
@@ -49,6 +45,9 @@ public class GeolocalizationCacheServiceImpl implements GeolocalizationCacheServ
     public GeolocalizationApiResult findPersistedByQuery(String query) {
         PersistentDao persistentDao = daoFactory.createPersistentDao();
         GeolocalizationApiResult result = persistentDao.findByQuery(query);
+        if(result == null) {
+            return null;
+        }
         if(isExpired(result.getExpireAt())) {
             persistentDao.deleteByQuery(query);
             return null;
@@ -61,7 +60,7 @@ public class GeolocalizationCacheServiceImpl implements GeolocalizationCacheServ
         try {
             daoFactory.close();
         } catch (Exception ex) {
-            logger.error(ex);
+            System.err.println(ex);
         }
     }
 
@@ -71,9 +70,9 @@ public class GeolocalizationCacheServiceImpl implements GeolocalizationCacheServ
 
     private Date getPersistedExpiringDate() {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, environmentConfigService.getExpireDatabaseDays());
-        calendar.add(Calendar.MONTH, environmentConfigService.getExpireDatabaseMonths());
-        calendar.add(Calendar.YEAR, environmentConfigService.getExpireDatabaseYears());
+        calendar.add(Calendar.DAY_OF_MONTH, configService.getExpireDatabaseDays());
+        calendar.add(Calendar.MONTH, configService.getExpireDatabaseMonths());
+        calendar.add(Calendar.YEAR, configService.getExpireDatabaseYears());
 
         return calendar.getTime();
     }

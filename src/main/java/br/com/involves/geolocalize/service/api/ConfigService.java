@@ -1,6 +1,6 @@
 package br.com.involves.geolocalize.service.api;
 
-public interface EnvironmentConfigService {
+public interface ConfigService {
 
     String getDatabaseHost();
 

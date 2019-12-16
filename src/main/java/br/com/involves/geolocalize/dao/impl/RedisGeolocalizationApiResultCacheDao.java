@@ -2,6 +2,7 @@ package br.com.involves.geolocalize.dao.impl;
 
 import br.com.involves.geolocalize.dao.api.CacheDao;
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
+import br.com.involves.geolocalize.util.SerializationUtils;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import redis.clients.jedis.Jedis;
@@ -18,8 +19,7 @@ public class RedisGeolocalizationApiResultCacheDao implements CacheDao {
     }
 
     public void save(GeolocalizationApiResult geolocalizationApiResult) {
-        Gson gson = new Gson();
-        jedis.set(geolocalizationApiResult.getQuery(), gson.toJson(geolocalizationApiResult));
+        jedis.set(geolocalizationApiResult.getQuery(), SerializationUtils.deserialize(geolocalizationApiResult));
     }
 
     public GeolocalizationApiResult findByQuery(String query) {
@@ -27,8 +27,7 @@ public class RedisGeolocalizationApiResultCacheDao implements CacheDao {
         if(Strings.isNullOrEmpty(result)) {
             return null;
         }
-        Gson gson = new Gson();
-        return gson.fromJson(result, GeolocalizationApiResult.class);
+        return SerializationUtils.serialize(result, GeolocalizationApiResult.class);
     }
 
     public void close() throws IOException {

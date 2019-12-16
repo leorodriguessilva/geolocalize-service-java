@@ -1,9 +1,9 @@
 package br.com.involves.geolocalize.service.impl;
 
 import br.com.involves.geolocalize.constants.EnvironmentConfigConstants;
-import br.com.involves.geolocalize.service.api.EnvironmentConfigService;
+import br.com.involves.geolocalize.service.api.ConfigService;
 
-public class EnvironmentConfigServiceImpl implements EnvironmentConfigService {
+public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public String getDatabaseHost() {

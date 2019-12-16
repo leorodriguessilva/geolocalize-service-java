@@ -4,87 +4,81 @@ import br.com.involves.geolocalize.dao.api.CacheDao;
 import br.com.involves.geolocalize.dao.api.DaoFactory;
 import br.com.involves.geolocalize.dao.api.PersistentDao;
 import br.com.involves.geolocalize.dto.TypeCache;
-import br.com.involves.geolocalize.service.api.EnvironmentConfigService;
-import java.util.HashMap;
-import java.util.Map;
+import br.com.involves.geolocalize.service.api.ConfigService;
 
 public class GeolocalizationApiResultDaoFactory implements DaoFactory {
 
-    private Map<TypeCache, PersistentDao> persistentDaos;
+    private PersistentDao persistentDao;
 
-    private Map<TypeCache, CacheDao> cacheDaos;
+    private CacheDao cacheDao;
 
     private int typeCache;
 
-    private EnvironmentConfigService environmentConfigService;
+    private ConfigService configService;
 
-    public GeolocalizationApiResultDaoFactory(int typeCache, EnvironmentConfigService environmentConfigService) {
+    public GeolocalizationApiResultDaoFactory(int typeCache, ConfigService configService) {
         this.typeCache = typeCache;
-        this.environmentConfigService = environmentConfigService;
+        this.configService = configService;
+        mapCacheDao();
+        mapPersistentDao();
     }
 
     public CacheDao createCacheDao() {
-        if(persistentDaos.containsKey(typeCache)) {
-            return cacheDaos.get(typeCache);
-        }
-        return new NoGeolocalizationApiResultCacheDao();
+        return cacheDao;
     }
 
     public PersistentDao createPersistentDao() {
-        if(persistentDaos.containsKey(typeCache)) {
-            return persistentDaos.get(typeCache);
-        }
-        return new NoDatabaseGeolocalizationApiResultDao();
+        return persistentDao;
     }
 
     @Override
     public void close() throws Exception {
         try {
-            for (PersistentDao persistentDao : persistentDaos.values()) {
-                persistentDao.close();
-            }
-            for (CacheDao cacheDao : cacheDaos.values()) {
-                cacheDao.close();
-            }
+            persistentDao.close();
+            cacheDao.close();
         } catch (Exception ex) {
             throw ex;
         }
     }
 
     private void mapPersistentDao() {
-        persistentDaos = new HashMap<>();
+        if(typeCache < TypeCache.ONLY_PERSISTENT_CACHE.getValue()) {
+            persistentDao = new NoDatabaseGeolocalizationApiResultDao();
+            return;
+        }
 
-        PersistentDao persistentDao = new CassandraGeolocalizationApiResultDao(
-                environmentConfigService.getDatabaseHost(),
-                environmentConfigService.getDatabasePort(),
-                environmentConfigService.getDatabaseUser(),
-                environmentConfigService.getDatabasePass(),
-                environmentConfigService.getTableName());
-        if(environmentConfigService.getUseDynamoDb()) {
+        persistentDao = new CassandraGeolocalizationApiResultDao(
+                configService.getDatabaseHost(),
+                configService.getDatabasePort(),
+                configService.getDatabaseUser(),
+                configService.getDatabasePass(),
+                configService.getTableName());
+        if(configService.getUseDynamoDb()) {
             persistentDao = new DynamoDBGeolocalizationApiResultDao(
-                    environmentConfigService.getTableName(),
-                    environmentConfigService.getAwsRegion());
+                    configService.getTableName(),
+                    configService.getAwsRegion());
         }
 
         PersistentDao loggerWrapper = persistentDao;
-        if(environmentConfigService.getLogPersistentCache()) {
+        if(configService.getLogPersistentCache()) {
             loggerWrapper = new GeolocalizationApiResultLoggerDao(persistentDao);
         }
 
-        persistentDaos.put(TypeCache.ONLY_PERSISTENT_CACHE, loggerWrapper);
-        persistentDaos.put(TypeCache.MEMORY_AND_PERSISTENT_CACHE, loggerWrapper);
+        persistentDao = loggerWrapper;
+        persistentDao.connect();
     }
 
     private void mapCacheDao() {
-        cacheDaos = new HashMap<>();
+        if(typeCache == TypeCache.ONLY_MEMORY_CACHE.getValue()
+                || typeCache == TypeCache.MEMORY_AND_PERSISTENT_CACHE.getValue()) {
 
-        CacheDao cacheDao = new RedisGeolocalizationApiResultCacheDao(
-                environmentConfigService.getCacheServerHost(),
-                environmentConfigService.getCacheServerPort(),
-                environmentConfigService.getCacheServerPass()
-        );
-
-        cacheDaos.put(TypeCache.ONLY_MEMORY_CACHE, cacheDao);
-        cacheDaos.put(TypeCache.MEMORY_AND_PERSISTENT_CACHE, cacheDao);
+            cacheDao = new RedisGeolocalizationApiResultCacheDao(
+                    configService.getCacheServerHost(),
+                    configService.getCacheServerPort(),
+                    configService.getCacheServerPass()
+            );
+            return;
+        }
+        cacheDao = new NoGeolocalizationApiResultCacheDao();
     }
 }

@@ -11,14 +11,10 @@ import com.datastax.oss.driver.api.core.cql.Row;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Date;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class CassandraGeolocalizationApiResultDao implements PersistentDao {
 
-    private final Logger logger = LogManager.getLogger(CassandraGeolocalizationApiResultDao.class);
-
-    private final CqlSession session;
+    private CqlSession session;
 
     private String tableName;
 
@@ -36,6 +32,10 @@ public class CassandraGeolocalizationApiResultDao implements PersistentDao {
         this.user = user;
         this.pass = pass;
         this.tableName = tableName;
+    }
+
+    @Override
+    public void connect() {
         session = createSession();
     }
 
@@ -51,7 +51,7 @@ public class CassandraGeolocalizationApiResultDao implements PersistentDao {
             session.execute(binded);
             return Boolean.TRUE;
         } catch(Exception ex) {
-            logger.error(ex);
+            System.err.println(ex);
             return Boolean.FALSE;
         }
     }
@@ -64,7 +64,7 @@ public class CassandraGeolocalizationApiResultDao implements PersistentDao {
             session.execute(binded);
             return Boolean.TRUE;
         } catch(Exception ex) {
-            logger.error(ex);
+            System.err.println(ex);
             return Boolean.FALSE;
         }
     }
@@ -85,7 +85,7 @@ public class CassandraGeolocalizationApiResultDao implements PersistentDao {
                 return result;
             }
         } catch(Exception ex) {
-            logger.error(ex);
+            System.err.println(ex);
         }
         return null;
     }

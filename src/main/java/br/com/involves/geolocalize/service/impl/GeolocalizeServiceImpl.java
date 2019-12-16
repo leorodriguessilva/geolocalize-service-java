@@ -2,23 +2,19 @@ package br.com.involves.geolocalize.service.impl;
 
 import br.com.involves.geolocalize.domain.GeolocalizationApiResult;
 import br.com.involves.geolocalize.dto.GeolocalizationResultDTO;
-import br.com.involves.geolocalize.service.api.EnvironmentConfigService;
+import br.com.involves.geolocalize.service.api.ConfigService;
 import br.com.involves.geolocalize.service.api.GeolocalizationCacheService;
 import br.com.involves.geolocalize.service.api.GeolocalizationService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
 
 public class GeolocalizeServiceImpl implements GeolocalizationService {
 
-    private final Logger logger = LogManager.getLogger(GeolocalizeServiceImpl.class);
-
     private int typeCache;
 
-    private EnvironmentConfigService configService;
+    private ConfigService configService;
 
-    public GeolocalizeServiceImpl(int typeCache, EnvironmentConfigService configService) {
+    public GeolocalizeServiceImpl(int typeCache, ConfigService configService) {
         this.typeCache = typeCache;
         this.configService = configService;
     }
@@ -28,7 +24,7 @@ public class GeolocalizeServiceImpl implements GeolocalizationService {
         try (GeolocalizationCacheService cacheService = new GeolocalizationCacheServiceImpl(typeCache, configService)) {
             return geolocalizeByQuery(query, cacheService);
         } catch(Exception ex) {
-            logger.error("Unidentified error when closing cache service", ex);
+            System.err.println(String.format("Unidentified error when closing cache service: %s", ex));
         }
         return null;
     }
@@ -48,6 +44,7 @@ public class GeolocalizeServiceImpl implements GeolocalizationService {
         }
 
         result = findLatLonByExternalApi(query);
+        System.out.println("Finded latlon by external api");
 
         if(result != null) {
             cacheService.cache(result);
