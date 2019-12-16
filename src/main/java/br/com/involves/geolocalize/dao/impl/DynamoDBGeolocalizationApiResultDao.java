@@ -68,7 +68,6 @@ public class DynamoDBGeolocalizationApiResultDao implements PersistentDao {
         Item item = table.getItem(key);
 
         if(item == null) {
-            System.out.println(String.format("Found no item by query %s", query));
             return null;
         }
 

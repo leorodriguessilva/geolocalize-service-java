@@ -44,7 +44,6 @@ public class GeolocalizeServiceImpl implements GeolocalizationService {
         }
 
         result = findLatLonByExternalApi(query);
-        System.out.println("Finded latlon by external api");
 
         if(result != null) {
             cacheService.cache(result);
